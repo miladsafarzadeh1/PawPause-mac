@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Paw Pause for Mac — pause the keyboard when your cat walks on it</title>
+<meta name="description" content="A tiny macOS menu bar app that detects when your cat is on the keyboard and pauses input system-wide. 100% on-device. Open source. Free." />
+<meta property="og:title" content="Paw Pause for Mac" />
+<meta property="og:description" content="Pause the keyboard when your cat walks on it. On-device, open source, free." />
+<meta property="og:image" content="icon.png" />
+<link rel="icon" href="icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<!--
+  BEFORE DEPLOY, replace these placeholders (search for each):
+    REPLACE_DMG_URL   → direct link to the .dmg on your GitHub Release
+    REPLACE_GH        → your GitHub repo URL
+    REPLACE_VERSION   → e.g. 1.0.0
+    REPLACE_SIZE      → e.g. 2.1 MB
+-->
+<style>
+:root{
+  --bg:#16140f;--panel:#1c190f;--panel2:#161309;--line:#2d281d;--line2:#221d13;
+  --ink:#f3e9d6;--ink2:#cabfa8;--mut:#7a7263;--mut2:#5c554a;
+  --amber:#e8a33d;--amber2:#c97a1f;--red:#ff5c47;--green:#7fcf9b;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --disp:'Syne',ui-sans-serif,system-ui,sans-serif;
+  --body:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;
+  background-image:radial-gradient(1100px 520px at 82% -8%,rgba(232,163,61,.09),transparent),radial-gradient(800px 400px at 0% 100%,rgba(232,163,61,.04),transparent);}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1020px;margin:0 auto;padding:0 22px}
+.mono{font-family:var(--mono)}.amber{color:var(--amber)}
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(8px);background:rgba(22,20,15,.72);border-bottom:1px solid var(--line)}
+.navrow{display:flex;align-items:center;justify-content:space-between;height:62px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:800;font-size:18px}
+.brand img{width:32px;height:32px;border-radius:8px}
+.navlinks{display:flex;align-items:center;gap:22px;font-size:14px;color:var(--ink2)}
+.navlinks a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:9px;background:var(--amber);color:#1a120f;font-weight:700;font-family:var(--mono);font-size:14px;padding:11px 18px;border-radius:10px;border:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:9px 14px;font-size:13px}
+@media(max-width:680px){.navlinks .hidesm{display:none}}
+header.hero{padding:70px 0 36px;text-align:center}
+.appicon{width:108px;height:108px;border-radius:24px;margin:0 auto 22px;display:block;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:3px;color:var(--amber);text-transform:uppercase;margin-bottom:14px}
+h1{font-family:var(--disp);font-weight:800;font-size:clamp(34px,5.5vw,58px);line-height:1.05;margin:0 0 16px;letter-spacing:-.5px}
+.sub{font-size:clamp(16px,2.1vw,19px);color:var(--ink2);max-width:560px;margin:0 auto 28px}
+.cta{display:flex;flex-wrap:wrap;gap:13px;align-items:center;justify-content:center}
+.dlmeta{margin-top:14px;font-family:var(--mono);font-size:12.5px;color:var(--mut)}
+.dlmeta b{color:var(--ink2);font-weight:500}
+section{padding:42px 0}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2.5px;color:var(--mut);text-transform:uppercase;margin-bottom:10px}
+h2{font-family:var(--disp);font-weight:700;font-size:clamp(24px,3.6vw,34px);margin:0 0 8px;letter-spacing:-.3px}
+.lead{color:var(--ink2);max-width:680px;margin:0 0 24px}
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+@media(max-width:760px){.trust{grid-template-columns:1fr}}
+.tcard{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px}
+.tcard .ic{font-size:20px}
+.tcard h3{font-family:var(--disp);font-weight:700;font-size:16px;margin:8px 0 6px}
+.tcard p{margin:0;color:var(--mut);font-size:13.5px}
+.steps{counter-reset:s;display:grid;gap:12px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 16px 15px 56px;position:relative}
+.step::before{counter-increment:s;content:counter(s);position:absolute;left:14px;top:14px;width:28px;height:28px;border-radius:8px;background:var(--amber);color:#1a120f;font-family:var(--mono);font-weight:700;display:grid;place-items:center;font-size:14px}
+.step h4{margin:0 0 3px;font-size:15px;font-family:var(--disp);font-weight:700}
+.step p{margin:0;color:var(--mut);font-size:13.5px}
+.demo{background:var(--panel);border:1px solid var(--line);border-radius:15px;overflow:hidden}
+.demohd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;letter-spacing:1px;color:var(--mut)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}.dot.red{background:var(--red);box-shadow:0 0 8px var(--red)}
+.demobody{display:grid;grid-template-columns:1.1fr .9fr;gap:0}
+@media(max-width:700px){.demobody{grid-template-columns:1fr}}
+.dl{padding:16px;border-right:1px solid var(--line)}@media(max-width:700px){.dl{border-right:none;border-bottom:1px solid var(--line)}}
+.dr{padding:16px}
+.ta-wrap{position:relative}
+textarea{width:100%;height:140px;resize:none;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:13px;color:var(--ink);font-family:var(--mono);font-size:13.5px;line-height:1.6;outline:none}
+textarea.locked{border-color:#5c2620}
+.clamp{position:absolute;inset:0;border-radius:10px;background:rgba(20,18,14,.9);display:none;flex-direction:column;align-items:center;justify-content:center;color:var(--red);text-align:center}
+.clamp.show{display:flex}
+.clamp .big{font-family:var(--disp);font-weight:800;font-size:17px;margin:6px 0 3px}
+.gw{display:flex;justify-content:center;padding:2px 0 6px}
+.scoreval{font-family:var(--mono);font-weight:700;font-size:30px;color:var(--amber)}
+.scorelab{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:var(--mut);text-align:center}
+.sig{margin-top:7px}.sigtop{display:flex;justify-content:space-between;align-items:baseline}
+.signame{font-size:12px;color:var(--mut)}.signame.on{color:var(--ink)}
+.track{height:4px;background:#252012;border-radius:3px;overflow:hidden;margin-top:3px}
+.fill{height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--amber2),var(--amber));transition:width .15s}
+.faq{display:grid;gap:10px}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";color:var(--amber);font-family:var(--mono);margin-right:10px}
+details[open] summary::before{content:"–"}
+details p{color:var(--mut);font-size:13.5px;margin:10px 0 0}
+details code{font-family:var(--mono);background:var(--panel2);padding:1px 5px;border-radius:4px;font-size:12px;color:var(--ink2)}
+.shot{background:var(--panel);border:1px dashed var(--line);border-radius:13px;padding:40px;text-align:center;color:var(--mut);font-family:var(--mono);font-size:12.5px}
+footer{border-top:1px solid var(--line);padding:32px 0 50px;margin-top:26px;color:var(--mut);font-size:13px}
+.footrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.footlinks{display:flex;gap:18px}.footlinks a:hover{color:var(--amber)}
+.note{font-size:11.5px;color:var(--mut2);max-width:720px;margin-top:16px}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap navrow">
+  <a class="brand" href="#top"><img src="icon.png" alt="Paw Pause"/> Paw Pause</a>
+  <div class="navlinks">
+    <a class="hidesm" href="#how">How it works</a>
+    <a class="hidesm" href="#install">Install</a>
+    <a class="hidesm" href="#privacy">Privacy</a>
+    <a class="btn sm" href="https://github.com/miladsafarzadeh1/PawPause-mac/releases/download/v1.0.0/PawPause.dmg">↓ Download</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+  <img class="appicon" src="icon.png" alt="Paw Pause app icon" />
+  <div class="eyebrow">macOS menu bar app · free · open source</div>
+  <h1>Pause the keyboard<br>when your cat walks on it.</h1>
+  <p class="sub">Paw Pause lives in your menu bar, watches for the unmistakable pattern of a cat on the keys, and pauses input system-wide before it posts gibberish or fires a shortcut. Type normally; the cat gets clamped.</p>
+  <div class="cta">
+    <a class="btn" href="https://github.com/miladsafarzadeh1/PawPause-mac/releases/download/v1.0.0/PawPause.dmg">↓ Download for macOS</a>
+    <a class="btn ghost" href="https://github.com/miladsafarzadeh1/PawPause-mac" target="_blank" rel="noopener">★ Source on GitHub</a>
+  </div>
+  <div class="dlmeta">v<b>1.0</b> · <b>250KB</b> · macOS <b>13 Ventura</b> or later · Apple Silicon &amp; Intel</div>
+</div></header>
+
+<section id="privacy"><div class="wrap">
+  <div class="kicker">Why you can trust it on your keyboard</div>
+  <h2>It watches keys. It keeps nothing.</h2>
+  <p class="lead">A tool that reads the keyboard should earn that access. Paw Pause is built so it can't betray it — and the whole thing is open source, so you don't have to take my word for it.</p>
+  <div class="trust">
+    <div class="tcard"><div class="ic">🔒</div><h3>100% on-device</h3><p>Zero network calls, zero storage, no analytics. Nothing you type ever leaves your Mac — there's nowhere for it to go.</p></div>
+    <div class="tcard"><div class="ic">⌨️</div><h3>Codes, not characters</h3><p>The detector inspects which physical keys fire and how fast — never the letters. It models paws, not passwords.</p></div>
+    <div class="tcard"><div class="ic">📖</div><h3>Open source (MIT)</h3><p>Every line is on GitHub. Read it, build it yourself, or audit exactly what it does with the access you grant.</p></div>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div class="kicker">The detection engine</div>
+  <h2>See it work — right here in your browser</h2>
+  <p class="lead">The Mac app and this demo run the identical model. Type a sentence (it passes), then hit <b>Simulate cat</b> or mash adjacent keys. Watch the signals light up and the input clamp.</p>
+  <div class="demo">
+    <div class="demohd"><span>DETECTION ENGINE — LIVE</span><span style="display:flex;align-items:center;gap:7px"><span class="dot" id="dot"></span><span id="stat">watching</span></span></div>
+    <div class="demobody">
+      <div class="dl">
+        <div class="ta-wrap">
+          <textarea id="field" placeholder="Type here. Then mash a s d f g, or hit Simulate cat. (Esc releases)" spellcheck="false"></textarea>
+          <div class="clamp" id="clamp"><span style="font-size:24px">🐾</span><div class="big">INPUT CLAMPED</div><div style="font-size:12px;color:var(--ink2)">auto-releases when typing settles</div></div>
+        </div>
+        <div style="margin-top:11px;display:flex;gap:9px">
+          <button class="btn sm" id="sim">⚡ Simulate cat</button>
+          <button class="btn ghost sm" id="clr">Clear</button>
+        </div>
+      </div>
+      <div class="dr">
+        <div class="gw"><div style="position:relative;width:130px;height:120px">
+          <svg width="130" height="120" viewBox="0 0 130 120"><g transform="rotate(135 65 60)">
+            <circle cx="65" cy="60" r="50" fill="none" stroke="#2a261d" stroke-width="9" stroke-dasharray="235.6 314.2" stroke-linecap="round"/>
+            <circle id="arc" cx="65" cy="60" r="50" fill="none" stroke="#e8a33d" stroke-width="9" stroke-dasharray="0 314.2" stroke-linecap="round" style="transition:stroke-dasharray .15s,stroke .2s"/>
+          </g></svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <div class="scoreval" id="sv">0.00</div><div class="scorelab">/ 1.0 TRIGGER</div>
+          </div>
+        </div></div>
+        <div id="sigs"></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="install"><div class="wrap">
+  <div class="kicker">Install</div>
+  <h2>Up and running in a minute</h2>
+  <p class="lead">Because Paw Pause needs to watch the keyboard, macOS asks you to grant two permissions the first time. That's the OS protecting you — here's the whole flow.</p>
+  <div class="steps">
+    <div class="step"><h4>Download &amp; open</h4><p>Grab the .dmg, drag Paw Pause to Applications, and launch it. It appears as a paw in your menu bar — no Dock icon, no window.</p></div>
+    <div class="step"><h4>Turn on Cat Mode</h4><p>Click the paw, flip <b>Cat Mode armed</b>. macOS will point you to grant access.</p></div>
+    <div class="step"><h4>Grant Input Monitoring &amp; Accessibility</h4><p>In System Settings → Privacy &amp; Security, enable Paw Pause under <b>Input Monitoring</b> and <b>Accessibility</b>. These let it watch and pause the keyboard. Relaunch the app.</p></div>
+    <div class="step"><h4>Done</h4><p>Type freely. When a cat lands, the keyboard pauses, the paw turns red, and it releases on its own — or press <b>Esc</b> anytime to override.</p></div>
+  </div>
+  <div class="shot" style="margin-top:14px">📸 Drop a screen recording / GIF of the menu and a clamp here (replace this box). A 6-second demo lifts conversions more than any copy.</div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kicker">Good to know</div>
+  <h2>FAQ</h2>
+  <div class="faq">
+    <details><summary>“Paw Pause can’t be opened because Apple cannot check it for malware.”</summary><p>If you see this, the build wasn’t notarized. Right-click the app → <code>Open</code> → <code>Open</code> again to confirm, or go to System Settings → Privacy &amp; Security and click <code>Open Anyway</code>. Notarized releases won’t show this at all.</p></details>
+    <details><summary>Does it log or send my keystrokes?</summary><p>No. It runs entirely on your Mac with no network access and no storage. It scores key-press <i>patterns</i> in memory and discards them. The source is public so you can verify this yourself.</p></details>
+    <details><summary>Will it block me, the human?</summary><p>Very rarely, and never for long. Auto-release lifts the clamp the instant typing settles, and <code>Esc</code> always overrides immediately. You can also tune sensitivity in the menu.</p></details>
+    <details><summary>Why isn’t it on the Mac App Store?</summary><p>App Store apps must run sandboxed, and the system-wide keyboard tap Paw Pause needs isn’t allowed in the sandbox. So it ships as a direct, notarized download instead.</p></details>
+    <details><summary>How do I uninstall it?</summary><p>Quit it from the menu, drag Paw Pause from Applications to the Trash, and optionally remove it from System Settings → Privacy &amp; Security → Input Monitoring / Accessibility. No leftovers, no background services.</p></details>
+    <details><summary>Is there a version for Slack / web apps / Windows?</summary><p>Yes — the same engine ships as a JavaScript library any app or site can embed, on any OS. See the GitHub repo.</p></details>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="footrow">
+    <div class="brand" style="font-size:16px"><img src="icon.png" alt="" style="width:26px;height:26px"/> Paw Pause</div>
+    <div class="footlinks">
+      <a href="https://github.com/miladsafarzadeh1/PawPause-mac" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/miladsafarzadeh1/PawPause-mac/releases/tag/v1.0.0" target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/miladsafarzadeh1/PawPause-mac" target="_blank" rel="noopener">Docs</a>
+    </div>
+  </div>
+  <p class="note">Paw Pause is macOS 13+ and notarized for direct download. It guards the whole keyboard while armed; it can’t undo characters already typed before a burst is detected (raise sensitivity to clamp sooner). MIT licensed. Made for cat owners with deadlines.</p>
+  <p class="note"> Built by <a href="https://milaad.net" target="_blank">Milad Safarzadeh</a></p>
+</div></footer>
+
+<script>
+var WINDOW_MS=1500,TRIGGER=1.0,RELEASE_MS=1000;
+var rows=[["KeyQ","KeyW","KeyE","KeyR","KeyT","KeyY","KeyU","KeyI","KeyO","KeyP"],["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK","KeyL"],["KeyZ","KeyX","KeyC","KeyV","KeyB","KeyN","KeyM","Comma","Period"]];
+var STR={Space:1,Enter:1,Backspace:1,Tab:1};
+var ADJ={};rows.forEach(function(r,ri){r.forEach(function(k,c){var n={};if(c>0)n[r[c-1]]=1;if(c<r.length-1)n[r[c+1]]=1;[ri-1,ri+1].forEach(function(d){if(d>=0&&d<rows.length)[c-1,c,c+1].forEach(function(o){if(o>=0&&o<rows[d].length)n[rows[d][o]]=1;});});ADJ[k]=n;});});
+function adj(a,b){return a!==b&&!!(ADJ[a]&&ADJ[a][b]);}
+var SIG=[["concurrent","Concurrent keys",0.7],["concurrentHi","Heavy press",0.7],["burst","Burst rate",0.4],["cluster","Adjacency roll",0.4],["repeat","Repetition",0.3],["nostruct","No structure",0.2]];
+function score(buf,held){var s=0,f={};if(held>=3){s+=0.7;f.concurrent=1;}if(held>=5){s+=0.7;f.concurrentHi=1;}if(buf.length/1.5>=8){s+=0.4;f.burst=1;}var run=0;for(var i=1;i<buf.length;i++)if(adj(buf[i-1].code,buf[i].code))run++;if(run>=3){s+=0.4;f.cluster=1;}var c={};buf.forEach(function(b){c[b.code]=(c[b.code]||0)+1;});var rp=false;for(var k in c)if(c[k]>=6)rp=true;if(rp){s+=0.3;f.repeat=1;}if(buf.length>=6&&!buf.some(function(b){return STR[b.code];})){s+=0.2;f.nostruct=1;}return{s:s,f:f};}
+(function(){
+  var field=document.getElementById("field"),clamp=document.getElementById("clamp"),arc=document.getElementById("arc"),sv=document.getElementById("sv"),sigs=document.getElementById("sigs"),dot=document.getElementById("dot"),stat=document.getElementById("stat");
+  var C=2*Math.PI*50,buf=[],kd={},kc=0,last=0,block=false,safe="",sim=false;
+  SIG.forEach(function(s){var e=document.createElement("div");e.className="sig";e.id="s-"+s[0];e.innerHTML='<div class="sigtop"><span class="signame">'+s[1]+'</span><span class="signame" style="font-size:11px">+'+s[2].toFixed(1)+'</span></div><div class="track"><div class="fill"></div></div>';sigs.appendChild(e);});
+  function render(v){var sc=v?v.s:0,f=v?v.f:{},p=Math.min(sc/TRIGGER,1);arc.setAttribute("stroke-dasharray",(p*C*0.75)+" "+C);var col=block?"#ff5c47":(p>0.6?"#e8a33d":"#caa15f");arc.setAttribute("stroke",col);sv.style.color=col;sv.textContent=sc.toFixed(2);SIG.forEach(function(s){var row=document.getElementById("s-"+s[0]),on=!!f[s[0]];row.querySelector(".signame").className="signame"+(on?" on":"");row.querySelector(".fill").style.width=on?"100%":"0";});dot.className="dot"+(block?" red":"");stat.textContent=block?"cat detected":"watching";clamp.className="clamp"+(block?" show":"");field.className=block?"locked":"";}
+  function feed(code,rep){var t=performance.now();last=t;if(!rep&&!kd[code]){kd[code]=1;kc++;}buf.push({code:code,time:t});buf=buf.filter(function(e){return t-e.time<=WINDOW_MS;});var v=score(buf,kc);render(v);if(v.s>=TRIGGER){block=true;render(v);return true;}return false;}
+  function reset(){buf=[];kd={};kc=0;block=false;render(null);}
+  function calm(){return score(buf,kc).s<0.3;}
+  field.addEventListener("keydown",function(e){if(e.key==="Escape"&&block){reset();return;}if(block){e.preventDefault();return;}if(feed(e.code,e.repeat)){e.preventDefault();field.value=safe;}});
+  field.addEventListener("keyup",function(e){if(kd[e.code]){delete kd[e.code];kc--;}});
+  field.addEventListener("input",function(){if(block)return;if(calm())safe=field.value;});
+  setInterval(function(){if(block&&kc===0&&performance.now()-last>=RELEASE_MS)reset();},200);
+  document.getElementById("clr").onclick=function(){field.value="";safe="";reset();};
+  document.getElementById("sim").onclick=function(){if(sim)return;sim=true;safe=field.value;var paw=["KeyA","KeyS","KeyD","KeyF","KeyG","KeyH","KeyJ","KeyK","KeyL","KeyF","KeyD"];kd={KeyD:1,KeyF:1,KeyG:1,KeyH:1};kc=4;var i=0;(function st(){if(i>=paw.length||block){sim=false;return;}var b=feed(paw[i],false);if(!b)field.value+=paw[i].replace("Key","").toLowerCase();i++;if(block){sim=false;return;}setTimeout(st,70);})();};
+  render(null);
+})();
+</script>
+</body>
+</html>
