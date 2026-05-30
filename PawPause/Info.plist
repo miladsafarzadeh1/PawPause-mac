@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Menu-bar-only: no Dock icon, no main window. -->
+    <key>LSUIElement</key>
+    <true/>
+
+    <key>NSInputMonitoringUsageDescription</key>
+    <string>Paw Pause watches keystroke patterns to detect when your cat is walking on the keyboard.</string>
+
+    <key>NSAppleEventsUsageDescription</key>
+    <string>Paw Pause needs Accessibility access to pause keystrokes while your cat is on the keyboard.</string>
+
+    <key>CFBundleName</key>
+    <string>Paw Pause</string>
+    <key>CFBundleDisplayName</key>
+    <string>Paw Pause</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+</dict>
+</plist>
